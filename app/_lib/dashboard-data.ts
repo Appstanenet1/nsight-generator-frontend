@@ -1,5 +1,5 @@
 import 'server-only';
-
+import path from 'path';
 import { DatabaseSync } from 'node:sqlite';
 import type {
   DashboardCampaign,
@@ -14,7 +14,7 @@ import type {
 import { DATE_RANGE_OPTIONS } from './dashboard-types';
 
 const DASHBOARD_DB_PATH =
-  process.env.INSIGHT_DB_PATH ?? 'D:/Dev/insight-generator/mock_database.db';
+  process.env.INSIGHT_DB_PATH ?? path.join(process.cwd(), 'mock_database.db');
 
 type SummaryRow = {
   spend: number | null;
