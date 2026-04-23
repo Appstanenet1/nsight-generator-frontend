@@ -153,71 +153,114 @@ export function KpiCard({ kpi }: { kpi: DashboardKpi }) {
 
 export function InsightCard({ insight }: { insight: DashboardInsight }) {
   const styles = toneStyles[insight.tone];
+  
+  // Magic: Auto-expand ONLY if it has an urgent/issue tone
+  const [isExpanded, setIsExpanded] = useState(insight.tone === 'negative');
 
   return (
-    <div className="overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.04] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06]">
-      <div className="flex items-start justify-between gap-3">
-        <span className={cn('inline-flex rounded-full border px-3 py-1 text-xs font-semibold', styles.badge)}>
-          {insight.tone === 'positive'
-            ? 'Opportunity'
-            : insight.tone === 'warning'
-              ? 'Watch'
-              : 'Issue'}
-        </span>
-        <span className={cn('h-2.5 w-2.5 rounded-full animate-soft-pulse', styles.dot)} />
+    <div className="overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.04] p-5 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]">
+      {/* Clickable Header */}
+      <div 
+        className="group flex cursor-pointer items-start justify-between gap-3"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex-1">
+          <div className="flex items-center gap-3">
+            <span className={cn('inline-flex rounded-full border px-3 py-1 text-xs font-semibold', styles.badge)}>
+              {insight.tone === 'positive'
+                ? 'Opportunity'
+                : insight.tone === 'warning'
+                  ? 'Watch'
+                  : 'Issue'}
+            </span>
+            <span className={cn('h-2.5 w-2.5 rounded-full animate-soft-pulse', styles.dot)} />
+          </div>
+          
+          <p className="mt-4 text-sm font-semibold leading-6 text-white">{insight.title}</p>
+        </div>
+        
+        {/* Expand/Collapse Chevron Icon */}
+        <div className="shrink-0 rounded-full bg-white/5 p-1.5 text-slate-400 transition-colors group-hover:bg-white/10 group-hover:text-white">
+          <svg 
+            className={cn("h-4 w-4 transition-transform duration-200", isExpanded && "rotate-180")} 
+            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
       </div>
 
-      <div className="mt-4 space-y-4">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
-            Insight
-          </p>
-          <p className="mt-2 text-sm font-semibold leading-6 text-white">{insight.title}</p>
-        </div>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
-            Supporting metric
-          </p>
-          <p className="mt-2 text-sm leading-6 text-slate-400">{insight.supportingMetric}</p>
-        </div>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
-            Suggested action
-          </p>
-          <p className="mt-2 text-sm leading-6 text-slate-300">{insight.action}</p>
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-          <div className="flex items-start gap-3">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300">
-              <InsightIcon />
-            </span>
-            <div>
-              <p className="text-xs font-medium text-slate-200">Insight source</p>
-              <p className="mt-1 text-sm leading-6 text-slate-400">{insight.source}</p>
-            </div>
+      {/* Collapsible Body */}
+      {isExpanded && (
+        <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
+              Supporting metric
+            </p>
+            <p className="mt-2 text-sm leading-6 text-slate-400">{insight.supportingMetric}</p>
+          </div>
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
+              Suggested action
+            </p>
+            <p className="mt-2 text-sm leading-6 text-slate-300">{insight.action}</p>
           </div>
 
-          {insight.contributingMetrics.length > 0 ? (
-            <details className="mt-3">
-              <summary className="cursor-pointer list-none text-sm font-medium text-cyan-200 marker:hidden">
-                Contributing metrics
-              </summary>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {insight.contributingMetrics.map((metric) => (
-                  <div
-                    key={`${insight.title}-${metric.label}`}
-                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
-                  >
-                    <span className="text-slate-500">{metric.label}:</span> {metric.value}
-                  </div>
-                ))}
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300">
+                <InsightIcon />
+              </span>
+              <div>
+                <p className="text-xs font-medium text-slate-200">Insight source</p>
+                <p className="mt-1 text-sm leading-6 text-slate-400">{insight.source}</p>
               </div>
-            </details>
-          ) : null}
+            </div>
+
+            {insight.contributingMetrics.length > 0 ? (
+              <details className="mt-3">
+                <summary className="cursor-pointer list-none text-sm font-medium text-cyan-200 marker:hidden">
+                  Contributing metrics
+                </summary>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {insight.contributingMetrics.map((metric) => (
+                    <div
+                      key={`${insight.title}-${metric.label}`}
+                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
+                    >
+                      <span className="text-slate-500">{metric.label}:</span> {metric.value}
+                    </div>
+                  ))}
+                </div>
+              </details>
+            ) : null}
+          </div>
         </div>
-      </div>
+      )}
     </div>
+  );
+}
+
+// Helper component for FocusAreaCard
+function ToneIcon({ tone }: { tone: Tone }) {
+  if (tone === 'positive') {
+    return (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+      </svg>
+    );
+  }
+  if (tone === 'warning') {
+    return (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
   );
 }
 
@@ -225,12 +268,26 @@ export function FocusAreaCard({ area }: { area: FocusArea }) {
   const styles = toneStyles[area.tone];
 
   return (
-    <div className="rounded-[24px] border border-white/10 bg-white/[0.04] p-4 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]">
-      <div className="flex items-center gap-3">
-        <span className={cn('h-2.5 w-2.5 rounded-full', styles.dot)} />
-        <p className="text-sm font-semibold text-white">{area.title}</p>
+    <div className={cn(
+      "relative overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default",
+      area.tone === 'positive' ? 'hover:border-emerald-500/30 hover:shadow-emerald-500/10' :
+      area.tone === 'warning' ? 'hover:border-amber-500/30 hover:shadow-amber-500/10' :
+      'hover:border-rose-500/30 hover:shadow-rose-500/10'
+    )}>
+      {/* Background radial glow */}
+      <div className={cn("absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl opacity-[0.15]", styles.dot)} />
+
+      <div className="relative flex items-start gap-4">
+        {/* Styled icon badge replacing the small dot */}
+        <div className={cn("mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border", styles.badge)}>
+          <ToneIcon tone={area.tone} />
+        </div>
+        
+        <div>
+          <p className="text-sm font-semibold text-white">{area.title}</p>
+          <p className="mt-2 text-sm leading-6 text-slate-400">{area.detail}</p>
+        </div>
       </div>
-      <p className="mt-3 text-sm leading-6 text-slate-400">{area.detail}</p>
     </div>
   );
 }
@@ -310,10 +367,8 @@ export function TrendChart({
                   onMouseEnter={() => setHoverIndex(index)}
                   className="cursor-pointer"
                 >
-                  {/* Invisible larger circle to make hovering much easier */}
                   <circle cx={point.x} cy={point.y} fill="transparent" r="20" />
                   
-                  {/* Outer dark background circle */}
                   <circle 
                     cx={point.x} 
                     cy={point.y} 
@@ -323,7 +378,6 @@ export function TrendChart({
                     style={{ transformOrigin: `${point.x}px ${point.y}px` }}
                   />
                   
-                  {/* Inner cyan active point */}
                   <circle 
                     cx={point.x} 
                     cy={point.y} 
@@ -337,7 +391,6 @@ export function TrendChart({
             })}
           </svg>
 
-          {/* Hover Overlay Tooltip */}
           {hoverIndex !== null && chartPoints[hoverIndex] && points[hoverIndex] && (
             <div
               className="absolute pointer-events-none z-10 -translate-x-1/2 -translate-y-full pb-3 transition-all duration-100 ease-out"
@@ -402,7 +455,6 @@ export function CampaignBarChart({
       </div>
 
       <div className="mt-6 rounded-[24px] border border-white/10 bg-slate-950/40 p-4">
-        {/* Updated Spend Scale Badge */}
         <div className="mb-3 flex items-center justify-between gap-3 text-xs">
           <span className="text-slate-500">Spend scale</span>
           <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 font-medium text-slate-300 shadow-sm">
@@ -482,29 +534,33 @@ export function DateRangeSelector({
   disabled?: boolean;
 }) {
   return (
-    <div className="inline-flex flex-wrap gap-2 rounded-[24px] border border-white/10 bg-white/[0.04] p-2">
-      {DATE_RANGE_OPTIONS.map((option) => {
-        const active = option.value === value;
-
-        return (
-          <button
-            key={option.value}
-            type="button"
-            disabled={disabled}
-            onClick={() => onChange(option.value)}
-            className={cn(
-              'rounded-2xl px-4 py-2 text-sm font-medium',
-              active
-                ? 'bg-[linear-gradient(135deg,#06b6d4_0%,#2563eb_100%)] text-white shadow-[0_18px_40px_-22px_rgba(59,130,246,0.9)]'
-                : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white',
-              disabled && 'cursor-not-allowed opacity-70',
-            )}
-            aria-pressed={active}
+    <div className="relative w-full sm:w-[200px]">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as DateRangeOption)}
+        disabled={disabled}
+        className={cn(
+          "w-full appearance-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2.5 pr-10 text-sm font-medium text-white outline-none backdrop-blur-md transition-all hover:bg-white/[0.06] focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 shadow-sm cursor-pointer",
+          disabled && "cursor-not-allowed opacity-70"
+        )}
+      >
+        {DATE_RANGE_OPTIONS.map((option) => (
+          <option 
+            key={option.value} 
+            value={option.value} 
+            className="bg-slate-900 text-white"
           >
             {option.label}
-          </button>
-        );
-      })}
+          </option>
+        ))}
+      </select>
+      
+      {/* Custom Up/Down Chevron Icon for the Dropdown */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+        </svg>
+      </div>
     </div>
   );
 }

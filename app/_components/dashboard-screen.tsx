@@ -21,12 +21,15 @@ import {
   formatDateLabel,
 } from './ui';
 
+type Tab = 'performance' | 'insights';
+
 export default function DashboardScreen() {
   const { selectedRange, setSelectedRange } = useWorkspaceState();
   const [reloadKey, setReloadKey] = useState(0);
   const [data, setData] = useState<DashboardResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('performance');
   const hasLoadedDataRef = useRef(false);
 
   useEffect(() => {
@@ -139,6 +142,36 @@ export default function DashboardScreen() {
         />
       </SurfaceCard>
 
+      {/* Sleek Tab Switcher */}
+      <div className="flex items-center justify-end">
+        <div className="inline-flex rounded-[20px] border border-white/10 bg-white/[0.04] p-1.5 backdrop-blur-md shadow-sm overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-w-full">
+          <button
+            type="button"
+            onClick={() => setActiveTab('performance')}
+            className={cn(
+              "shrink-0 rounded-2xl px-6 py-2.5 text-sm font-medium transition-all duration-300",
+              activeTab === 'performance'
+                ? "bg-[linear-gradient(135deg,#06b6d4_0%,#2563eb_100%)] text-white shadow-[0_8px_20px_-10px_rgba(59,130,246,0.8)]"
+                : "text-slate-400 hover:text-white hover:bg-white/5"
+            )}
+          >
+            Performance Overview
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('insights')}
+            className={cn(
+              "shrink-0 rounded-2xl px-6 py-2.5 text-sm font-medium transition-all duration-300",
+              activeTab === 'insights'
+                ? "bg-[linear-gradient(135deg,#06b6d4_0%,#2563eb_100%)] text-white shadow-[0_8px_20px_-10px_rgba(59,130,246,0.8)]"
+                : "text-slate-400 hover:text-white hover:bg-white/5"
+            )}
+          >
+            AI Insights & Actions
+          </button>
+        </div>
+      </div>
+
       {error ? (
         <SurfaceCard className="border-rose-400/20 bg-rose-400/[0.05] p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -156,65 +189,76 @@ export default function DashboardScreen() {
         </SurfaceCard>
       ) : null}
 
+      {/* Main Content Area */}
       <div className={cn('space-y-6 transition-opacity duration-300', isRefreshing && 'opacity-80')}>
-        <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4" aria-busy={isRefreshing}>
-          {data.kpis.map((kpi) => (
-            <KpiCard key={kpi.key} kpi={kpi} />
-          ))}
-        </section>
+        
+        {/* Tab 1: Performance */}
+        {activeTab === 'performance' && (
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-6">
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" aria-busy={isRefreshing}>
+              {data.kpis.map((kpi) => (
+                <KpiCard key={kpi.key} kpi={kpi} />
+              ))}
+            </section>
 
-        <section className="grid gap-6 2xl:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.95fr)]">
-          <div className="space-y-6">
-            <SurfaceCard className="p-6 sm:p-7">
-              <SectionHeader
-                eyebrow="Trend"
-                title="ROAS over time"
-                description={`Daily time-series data from the connected database for ${data.periodLabel.toLowerCase()}.`}
-                badge={isRefreshing ? <LoadingBadge label="Refreshing chart" /> : undefined}
-              />
-              <TrendChart points={data.trend} periodLabel={data.periodLabel} />
-            </SurfaceCard>
+            <section className="grid gap-6 xl:grid-cols-2">
+              <SurfaceCard className="p-6 sm:p-7">
+                <SectionHeader
+                  eyebrow="Trend"
+                  title="ROAS over time"
+                  description={`Daily time-series data from the connected database for ${data.periodLabel.toLowerCase()}.`}
+                  badge={isRefreshing ? <LoadingBadge label="Refreshing chart" /> : undefined}
+                />
+                <TrendChart points={data.trend} periodLabel={data.periodLabel} />
+              </SurfaceCard>
 
-            <SurfaceCard className="p-6 sm:p-7">
-              <SectionHeader
-                eyebrow="Campaign comparison"
-                title="Top-spend campaigns"
-                description={`Spend-weighted campaign comparison for ${data.periodLabel.toLowerCase()}, now visualized directly in-chart.`}
-                badge={isRefreshing ? <LoadingBadge label="Refreshing campaigns" /> : undefined}
-              />
-              <CampaignBarChart campaigns={data.campaigns} periodLabel={data.periodLabel} />
-            </SurfaceCard>
+              <SurfaceCard className="p-6 sm:p-7">
+                <SectionHeader
+                  eyebrow="Campaign comparison"
+                  title="Top-spend campaigns"
+                  description={`Spend-weighted campaign comparison for ${data.periodLabel.toLowerCase()}, now visualized directly in-chart.`}
+                  badge={isRefreshing ? <LoadingBadge label="Refreshing campaigns" /> : undefined}
+                />
+                <CampaignBarChart campaigns={data.campaigns} periodLabel={data.periodLabel} />
+              </SurfaceCard>
+            </section>
           </div>
+        )}
 
-          <div className="space-y-6">
-            <SurfaceCard className="p-6 sm:p-7">
-              <SectionHeader
-                eyebrow="Backend insights"
-                title="Insight cards"
-                description="Insights now include source transparency and the specific metrics contributing to each callout."
-                badge={isRefreshing ? <LoadingBadge label="Refreshing insights" /> : undefined}
-              />
-              <div className="mt-5 space-y-4">
-                {data.insights.map((insight) => (
-                  <InsightCard key={insight.title} insight={insight} />
-                ))}
-              </div>
-            </SurfaceCard>
+        {/* Tab 2: Insights */}
+        {activeTab === 'insights' && (
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <section className="grid gap-6 xl:grid-cols-2">
+              <SurfaceCard className="p-6 sm:p-7 h-fit">
+                <SectionHeader
+                  eyebrow="Backend insights"
+                  title="Insight cards"
+                  description="Insights now include source transparency and the specific metrics contributing to each callout."
+                  badge={isRefreshing ? <LoadingBadge label="Refreshing insights" /> : undefined}
+                />
+                <div className="mt-5 space-y-4">
+                  {data.insights.map((insight) => (
+                    <InsightCard key={insight.title} insight={insight} />
+                  ))}
+                </div>
+              </SurfaceCard>
 
-            <SurfaceCard className="p-6 sm:p-7">
-              <SectionHeader
-                eyebrow="Suggested focus"
-                title="Where to look next"
-                description="Priority focus areas derived from current spend concentration, efficiency, and recent trend movement."
-              />
-              <div className="mt-5 space-y-3">
-                {data.focusAreas.map((focusArea) => (
-                  <FocusAreaCard key={focusArea.title} area={focusArea} />
-                ))}
-              </div>
-            </SurfaceCard>
+              <SurfaceCard className="p-6 sm:p-7 h-fit">
+                <SectionHeader
+                  eyebrow="Suggested focus"
+                  title="Where to look next"
+                  description="Priority focus areas derived from current spend concentration, efficiency, and recent trend movement."
+                />
+                <div className="mt-5 space-y-3">
+                  {data.focusAreas.map((focusArea) => (
+                    <FocusAreaCard key={focusArea.title} area={focusArea} />
+                  ))}
+                </div>
+              </SurfaceCard>
+            </section>
           </div>
-        </section>
+        )}
+
       </div>
     </div>
   );
