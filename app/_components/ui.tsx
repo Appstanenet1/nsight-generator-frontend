@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import type {
   DashboardCampaign,
   DashboardInsight,
@@ -239,6 +242,8 @@ export function TrendChart({
   points: DashboardTrendPoint[];
   periodLabel: string;
 }) {
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+
   const values = points.map((point) => point.roas);
   const chartPoints = getChartPoints(values, 420, 190);
   const linePath = getLinePath(chartPoints);
@@ -263,43 +268,98 @@ export function TrendChart({
       </div>
 
       <div className="mt-6 rounded-[24px] border border-white/10 bg-slate-950/40 p-4">
-        <svg className="h-48 w-full" viewBox="0 0 420 190" aria-label="ROAS time series chart">
-          <defs>
-            <linearGradient id="trend-fill" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="rgba(56,189,248,0.35)" />
-              <stop offset="100%" stopColor="rgba(56,189,248,0)" />
-            </linearGradient>
-          </defs>
+        <div 
+          className="relative h-48 w-full" 
+          onMouseLeave={() => setHoverIndex(null)}
+        >
+          <svg className="h-full w-full" viewBox="0 0 420 190" aria-label="ROAS time series chart">
+            <defs>
+              <linearGradient id="trend-fill" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="rgba(56,189,248,0.35)" />
+                <stop offset="100%" stopColor="rgba(56,189,248,0)" />
+              </linearGradient>
+            </defs>
 
-          {[32, 72, 112, 152].map((offset) => (
-            <line
-              key={offset}
-              x1="0"
-              x2="420"
-              y1={offset}
-              y2={offset}
-              stroke="rgba(148,163,184,0.14)"
-              strokeDasharray="5 7"
+            {[32, 72, 112, 152].map((offset) => (
+              <line
+                key={offset}
+                x1="0"
+                x2="420"
+                y1={offset}
+                y2={offset}
+                stroke="rgba(148,163,184,0.14)"
+                strokeDasharray="5 7"
+              />
+            ))}
+
+            <path d={areaPath} fill="url(#trend-fill)" />
+            <path
+              d={linePath}
+              fill="none"
+              stroke="#67e8f9"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="4"
             />
-          ))}
 
-          <path d={areaPath} fill="url(#trend-fill)" />
-          <path
-            d={linePath}
-            fill="none"
-            stroke="#67e8f9"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="4"
-          />
+            {chartPoints.map((point, index) => {
+              const isHovered = hoverIndex === index;
+              return (
+                <g 
+                  key={points[index]?.date ?? index}
+                  onMouseEnter={() => setHoverIndex(index)}
+                  className="cursor-pointer"
+                >
+                  {/* Invisible larger circle to make hovering much easier */}
+                  <circle cx={point.x} cy={point.y} fill="transparent" r="20" />
+                  
+                  {/* Outer dark background circle */}
+                  <circle 
+                    cx={point.x} 
+                    cy={point.y} 
+                    fill="#08111f" 
+                    r={isHovered ? "8" : "6"} 
+                    className="transition-all duration-200" 
+                    style={{ transformOrigin: `${point.x}px ${point.y}px` }}
+                  />
+                  
+                  {/* Inner cyan active point */}
+                  <circle 
+                    cx={point.x} 
+                    cy={point.y} 
+                    fill="#67e8f9" 
+                    r={isHovered ? "5" : "3.5"} 
+                    className="transition-all duration-200" 
+                    style={{ transformOrigin: `${point.x}px ${point.y}px` }}
+                  />
+                </g>
+              );
+            })}
+          </svg>
 
-          {chartPoints.map((point, index) => (
-            <g key={points[index]?.date ?? index}>
-              <circle cx={point.x} cy={point.y} fill="#08111f" r="6" />
-              <circle cx={point.x} cy={point.y} fill="#67e8f9" r="3.5" />
-            </g>
-          ))}
-        </svg>
+          {/* Hover Overlay Tooltip */}
+          {hoverIndex !== null && chartPoints[hoverIndex] && points[hoverIndex] && (
+            <div
+              className="absolute pointer-events-none z-10 -translate-x-1/2 -translate-y-full pb-3 transition-all duration-100 ease-out"
+              style={{
+                left: `${(chartPoints[hoverIndex].x / 420) * 100}%`,
+                top: `${(chartPoints[hoverIndex].y / 190) * 100}%`,
+              }}
+            >
+              <div className="whitespace-nowrap rounded-xl border border-white/10 bg-slate-900/95 px-3 py-2 text-xs shadow-2xl backdrop-blur-md">
+                <p className="font-medium text-slate-400">
+                  {formatDateLabel(points[hoverIndex].date)}
+                </p>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                  <p className="font-semibold text-white">
+                    {formatMultiple(points[hoverIndex].roas)} ROAS
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div
           className={cn(
@@ -323,6 +383,8 @@ export function CampaignBarChart({
   campaigns: DashboardCampaign[];
   periodLabel: string;
 }) {
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  
   const maxSpend = Math.max(...campaigns.map((campaign) => campaign.spend), 1);
 
   return (
@@ -340,40 +402,66 @@ export function CampaignBarChart({
       </div>
 
       <div className="mt-6 rounded-[24px] border border-white/10 bg-slate-950/40 p-4">
-        <div className="mb-3 flex items-center justify-between gap-3 text-xs text-slate-500">
-          <span>Spend scale</span>
-          <span>{formatCompactCurrency(maxSpend)} max</span>
+        {/* Updated Spend Scale Badge */}
+        <div className="mb-3 flex items-center justify-between gap-3 text-xs">
+          <span className="text-slate-500">Spend scale</span>
+          <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 font-medium text-slate-300 shadow-sm">
+            {formatCompactCurrency(maxSpend)} max
+          </span>
         </div>
-        <div className="flex h-64 items-end gap-3">
-          {campaigns.map((campaign) => {
+        
+        <div className="flex h-64 items-end gap-3 pt-8">
+          {campaigns.map((campaign, index) => {
             const tone = getCampaignTone(campaign.roas);
+            const isHovered = hoverIndex === index;
 
             return (
-              <div key={campaign.campaignName} className="flex min-w-0 flex-1 flex-col items-center gap-3">
+              <div key={campaign.campaignName} className="flex min-w-0 flex-1 flex-col items-center gap-3 h-full">
                 <div className="flex h-full w-full items-end">
                   <div
+                    onMouseEnter={() => setHoverIndex(index)}
+                    onMouseLeave={() => setHoverIndex(null)}
                     className={cn(
-                      'w-full rounded-t-[20px] bg-gradient-to-t shadow-[0_16px_40px_-20px] transition-transform duration-300 hover:-translate-y-1',
+                      'relative w-full rounded-t-md border-t-2 bg-gradient-to-t transition-all duration-300 cursor-pointer',
+                      isHovered ? 'opacity-100 brightness-110' : 'opacity-70 hover:opacity-100', 
                       tone === 'positive'
-                        ? 'from-emerald-500 via-emerald-400 to-emerald-300 shadow-emerald-500/30'
+                        ? 'border-emerald-400 from-emerald-500/0 to-emerald-500/30 shadow-[0_-8px_16px_-6px_rgba(52,211,153,0.25)]'
                         : tone === 'warning'
-                          ? 'from-amber-500 via-amber-400 to-amber-300 shadow-amber-500/25'
-                          : 'from-rose-500 via-rose-400 to-rose-300 shadow-rose-500/25',
+                          ? 'border-amber-400 from-amber-500/0 to-amber-500/30 shadow-[0_-8px_16px_-6px_rgba(251,191,36,0.25)]'
+                          : 'border-rose-400 from-rose-500/0 to-rose-500/30 shadow-[0_-8px_16px_-6px_rgba(244,63,94,0.25)]',
                     )}
                     style={{ height: `${(campaign.spend / maxSpend) * 100}%` }}
-                  />
+                  >
+                    {isHovered && (
+                      <div className="absolute bottom-full left-1/2 mb-3 -translate-x-1/2 z-20 pointer-events-none">
+                        <div className="whitespace-nowrap rounded-xl border border-white/10 bg-slate-900/95 px-3 py-2.5 text-xs shadow-2xl backdrop-blur-md">
+                          <p className="font-semibold text-white mb-2">{campaign.campaignName}</p>
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center justify-between gap-4">
+                              <span className="text-slate-400 font-medium">Spend</span>
+                              <span className="font-semibold text-white">{formatCurrency(campaign.spend)}</span>
+                            </div>
+                            <div className="flex items-center justify-between gap-4">
+                              <span className="text-slate-400 font-medium">ROAS</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className={cn('h-1.5 w-1.5 rounded-full', toneStyles[tone].dot)} />
+                                <span className="font-semibold text-white">{formatMultiple(campaign.roas)}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
+                
                 <div className="w-full text-center">
-                  <p className="text-[11px] font-medium text-slate-400">
-                    {formatCompactCurrency(campaign.spend)}
+                  <p 
+                    className="truncate text-[11px] font-medium text-slate-400 hover:text-slate-200 transition-colors cursor-default" 
+                    title={campaign.campaignName}
+                  >
+                    {truncateLabel(campaign.campaignName, 14)}
                   </p>
-                  <p className="truncate text-sm font-medium text-white">
-                    {truncateLabel(campaign.campaignName, 16)}
-                  </p>
-                  <p className="text-[11px] text-slate-500">
-                    {formatCompactCurrency(campaign.spend)} spend
-                  </p>
-                  <p className="text-[11px] text-slate-500">{formatMultiple(campaign.roas)} ROAS</p>
                 </div>
               </div>
             );
