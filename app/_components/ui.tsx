@@ -22,22 +22,22 @@ const toneStyles: Record<
   }
 > = {
   positive: {
-    badge: 'border-emerald-400/20 bg-emerald-400/10 text-emerald-200',
+    badge: 'border-emerald-200 bg-emerald-50 text-emerald-700',
     dot: 'bg-emerald-400',
-    emphasis: 'text-emerald-300',
-    accent: 'from-emerald-500/25 via-emerald-400/10 to-transparent',
+    emphasis: 'text-emerald-700',
+    accent: 'from-emerald-500/18 via-emerald-400/8 to-transparent',
   },
   warning: {
-    badge: 'border-amber-400/20 bg-amber-400/10 text-amber-200',
+    badge: 'border-amber-200 bg-amber-50 text-amber-700',
     dot: 'bg-amber-400',
-    emphasis: 'text-amber-300',
-    accent: 'from-amber-500/25 via-amber-400/10 to-transparent',
+    emphasis: 'text-amber-700',
+    accent: 'from-amber-500/18 via-amber-400/8 to-transparent',
   },
   negative: {
-    badge: 'border-rose-400/20 bg-rose-400/10 text-rose-200',
+    badge: 'border-rose-200 bg-rose-50 text-rose-700',
     dot: 'bg-rose-400',
-    emphasis: 'text-rose-300',
-    accent: 'from-rose-500/25 via-rose-400/10 to-transparent',
+    emphasis: 'text-rose-700',
+    accent: 'from-rose-500/18 via-rose-400/8 to-transparent',
   },
 };
 
@@ -55,11 +55,11 @@ export function SurfaceCard({
   return (
     <section
       className={cn(
-        'relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.04] shadow-[0_35px_100px_-55px_rgba(15,23,42,0.98)] backdrop-blur-xl',
+        'relative overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_35px_100px_-60px_rgba(15,23,42,0.18)] backdrop-blur-xl',
         className,
       )}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),transparent_35%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(248,250,252,0.9),transparent_35%)]" />
       <div className="relative">{children}</div>
     </section>
   );
@@ -82,10 +82,10 @@ export function PageLead({
         <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
           {eyebrow}
         </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
           {title}
         </h1>
-        <p className="mt-3 text-sm leading-7 text-slate-400 sm:text-base">{description}</p>
+        <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">{description}</p>
       </div>
       {aside ? <div className="shrink-0">{aside}</div> : null}
     </div>
@@ -109,10 +109,10 @@ export function SectionHeader({
         <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
           {eyebrow}
         </p>
-        <h2 className="mt-2 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+        <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
           {title}
         </h2>
-        <p className="mt-2 text-sm leading-6 text-slate-400">{description}</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
       </div>
       {badge ? <div className="shrink-0">{badge}</div> : null}
     </div>
@@ -134,16 +134,17 @@ export function KpiCard({ kpi }: { kpi: DashboardKpi }) {
             </p>
           </div>
           <div className="mt-4 flex flex-wrap items-end gap-3">
-            <p className="text-3xl font-semibold tracking-tight text-white">
+            <p className="text-3xl font-semibold tracking-tight text-slate-900">
               {kpi.format === 'currency' ? formatCurrency(kpi.value) : formatMultiple(kpi.value)}
             </p>
             <span className={cn('rounded-full border px-3 py-1 text-xs font-semibold', styles.badge)}>
               {formatSignedDelta(kpi.deltaPercent)}
             </span>
           </div>
-          <p className="mt-3 text-sm leading-6 text-slate-400">{kpi.context}</p>
+          <p className="mt-3 text-sm leading-6 text-slate-600">{kpi.context}</p>
           <p className="mt-3 text-xs text-slate-500">
-            Previous: {kpi.format === 'currency' ? formatCurrency(kpi.previousValue) : formatMultiple(kpi.previousValue)}
+            Previous:{' '}
+            {kpi.format === 'currency' ? formatCurrency(kpi.previousValue) : formatMultiple(kpi.previousValue)}
           </p>
         </div>
       </div>
@@ -153,14 +154,11 @@ export function KpiCard({ kpi }: { kpi: DashboardKpi }) {
 
 export function InsightCard({ insight }: { insight: DashboardInsight }) {
   const styles = toneStyles[insight.tone];
-  
-  // Magic: Auto-expand ONLY if it has an urgent/issue tone
   const [isExpanded, setIsExpanded] = useState(insight.tone === 'negative');
 
   return (
-    <div className="overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.04] p-5 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]">
-      {/* Clickable Header */}
-      <div 
+    <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white p-5 transition-all duration-300 hover:border-slate-300 hover:bg-slate-50/80">
+      <div
         className="group flex cursor-pointer items-start justify-between gap-3"
         onClick={() => setIsExpanded(!isExpanded)}
       >
@@ -175,58 +173,58 @@ export function InsightCard({ insight }: { insight: DashboardInsight }) {
             </span>
             <span className={cn('h-2.5 w-2.5 rounded-full animate-soft-pulse', styles.dot)} />
           </div>
-          
-          <p className="mt-4 text-sm font-semibold leading-6 text-white">{insight.title}</p>
+
+          <p className="mt-4 text-sm font-semibold leading-6 text-slate-900">{insight.title}</p>
         </div>
-        
-        {/* Expand/Collapse Chevron Icon */}
-        <div className="shrink-0 rounded-full bg-white/5 p-1.5 text-slate-400 transition-colors group-hover:bg-white/10 group-hover:text-white">
-          <svg 
-            className={cn("h-4 w-4 transition-transform duration-200", isExpanded && "rotate-180")} 
-            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+
+        <div className="shrink-0 rounded-full bg-slate-100 p-1.5 text-slate-500 transition-colors group-hover:bg-slate-200 group-hover:text-slate-900">
+          <svg
+            className={cn('h-4 w-4 transition-transform duration-200', isExpanded && 'rotate-180')}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>
       </div>
 
-      {/* Collapsible Body */}
       {isExpanded && (
-        <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="animate-in fade-in slide-in-from-top-2 mt-4 space-y-4 duration-200">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
               Supporting metric
             </p>
-            <p className="mt-2 text-sm leading-6 text-slate-400">{insight.supportingMetric}</p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">{insight.supportingMetric}</p>
           </div>
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
               Suggested action
             </p>
-            <p className="mt-2 text-sm leading-6 text-slate-300">{insight.action}</p>
+            <p className="mt-2 text-sm leading-6 text-slate-700">{insight.action}</p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
             <div className="flex items-start gap-3">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600">
                 <InsightIcon />
               </span>
               <div>
-                <p className="text-xs font-medium text-slate-200">Insight source</p>
-                <p className="mt-1 text-sm leading-6 text-slate-400">{insight.source}</p>
+                <p className="text-xs font-medium text-slate-800">Insight source</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">{insight.source}</p>
               </div>
             </div>
 
             {insight.contributingMetrics.length > 0 ? (
               <details className="mt-3">
-                <summary className="cursor-pointer list-none text-sm font-medium text-cyan-200 marker:hidden">
+                <summary className="cursor-pointer list-none text-sm font-medium text-cyan-700 marker:hidden">
                   Contributing metrics
                 </summary>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {insight.contributingMetrics.map((metric) => (
                     <div
                       key={`${insight.title}-${metric.label}`}
-                      className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300"
+                      className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700"
                     >
                       <span className="text-slate-500">{metric.label}:</span> {metric.value}
                     </div>
@@ -241,7 +239,6 @@ export function InsightCard({ insight }: { insight: DashboardInsight }) {
   );
 }
 
-// Helper component for FocusAreaCard
 function ToneIcon({ tone }: { tone: Tone }) {
   if (tone === 'positive') {
     return (
@@ -268,24 +265,26 @@ export function FocusAreaCard({ area }: { area: FocusArea }) {
   const styles = toneStyles[area.tone];
 
   return (
-    <div className={cn(
-      "relative overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-default",
-      area.tone === 'positive' ? 'hover:border-emerald-500/30 hover:shadow-emerald-500/10' :
-      area.tone === 'warning' ? 'hover:border-amber-500/30 hover:shadow-amber-500/10' :
-      'hover:border-rose-500/30 hover:shadow-rose-500/10'
-    )}>
-      {/* Background radial glow */}
-      <div className={cn("absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl opacity-[0.15]", styles.dot)} />
+    <div
+      className={cn(
+        'relative cursor-default overflow-hidden rounded-[24px] border border-slate-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg',
+        area.tone === 'positive'
+          ? 'hover:border-emerald-500/30 hover:shadow-emerald-500/10'
+          : area.tone === 'warning'
+            ? 'hover:border-amber-500/30 hover:shadow-amber-500/10'
+            : 'hover:border-rose-500/30 hover:shadow-rose-500/10',
+      )}
+    >
+      <div className={cn('absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl opacity-[0.15]', styles.dot)} />
 
       <div className="relative flex items-start gap-4">
-        {/* Styled icon badge replacing the small dot */}
-        <div className={cn("mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border", styles.badge)}>
+        <div className={cn('mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border', styles.badge)}>
           <ToneIcon tone={area.tone} />
         </div>
-        
+
         <div>
-          <p className="text-sm font-semibold text-white">{area.title}</p>
-          <p className="mt-2 text-sm leading-6 text-slate-400">{area.detail}</p>
+          <p className="text-sm font-semibold text-slate-900">{area.title}</p>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{area.detail}</p>
         </div>
       </div>
     </div>
@@ -312,23 +311,20 @@ export function TrendChart({
     <div className="mt-6">
       <div className="flex items-end justify-between gap-4">
         <div>
-          <p className="text-3xl font-semibold tracking-tight text-white">
+          <p className="text-3xl font-semibold tracking-tight text-slate-900">
             {latestPoint ? formatMultiple(latestPoint.roas) : '0.00x'}
           </p>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-slate-600">
             Daily ROAS trend across enabled campaigns in the connected dataset.
           </p>
         </div>
-        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">
+        <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
           {periodLabel}
         </span>
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-white/10 bg-slate-950/40 p-4">
-        <div 
-          className="relative h-48 w-full" 
-          onMouseLeave={() => setHoverIndex(null)}
-        >
+      <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+        <div className="relative h-48 w-full" onMouseLeave={() => setHoverIndex(null)}>
           <svg className="h-full w-full" viewBox="0 0 420 190" aria-label="ROAS time series chart">
             <defs>
               <linearGradient id="trend-fill" x1="0" x2="0" y1="0" y2="1">
@@ -344,7 +340,7 @@ export function TrendChart({
                 x2="420"
                 y1={offset}
                 y2={offset}
-                stroke="rgba(148,163,184,0.14)"
+                stroke="rgba(148,163,184,0.22)"
                 strokeDasharray="5 7"
               />
             ))}
@@ -353,7 +349,7 @@ export function TrendChart({
             <path
               d={linePath}
               fill="none"
-              stroke="#67e8f9"
+              stroke="#06b6d4"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="4"
@@ -362,28 +358,28 @@ export function TrendChart({
             {chartPoints.map((point, index) => {
               const isHovered = hoverIndex === index;
               return (
-                <g 
+                <g
                   key={points[index]?.date ?? index}
                   onMouseEnter={() => setHoverIndex(index)}
                   className="cursor-pointer"
                 >
                   <circle cx={point.x} cy={point.y} fill="transparent" r="20" />
-                  
-                  <circle 
-                    cx={point.x} 
-                    cy={point.y} 
-                    fill="#08111f" 
-                    r={isHovered ? "8" : "6"} 
-                    className="transition-all duration-200" 
+
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    fill="#ffffff"
+                    r={isHovered ? '8' : '6'}
+                    className="transition-all duration-200"
                     style={{ transformOrigin: `${point.x}px ${point.y}px` }}
                   />
-                  
-                  <circle 
-                    cx={point.x} 
-                    cy={point.y} 
-                    fill="#67e8f9" 
-                    r={isHovered ? "5" : "3.5"} 
-                    className="transition-all duration-200" 
+
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    fill="#06b6d4"
+                    r={isHovered ? '5' : '3.5'}
+                    className="transition-all duration-200"
                     style={{ transformOrigin: `${point.x}px ${point.y}px` }}
                   />
                 </g>
@@ -393,19 +389,17 @@ export function TrendChart({
 
           {hoverIndex !== null && chartPoints[hoverIndex] && points[hoverIndex] && (
             <div
-              className="absolute pointer-events-none z-10 -translate-x-1/2 -translate-y-full pb-3 transition-all duration-100 ease-out"
+              className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full pb-3 transition-all duration-100 ease-out"
               style={{
                 left: `${(chartPoints[hoverIndex].x / 420) * 100}%`,
                 top: `${(chartPoints[hoverIndex].y / 190) * 100}%`,
               }}
             >
-              <div className="whitespace-nowrap rounded-xl border border-white/10 bg-slate-900/95 px-3 py-2 text-xs shadow-2xl backdrop-blur-md">
-                <p className="font-medium text-slate-400">
-                  {formatDateLabel(points[hoverIndex].date)}
-                </p>
+              <div className="whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs shadow-xl">
+                <p className="font-medium text-slate-500">{formatDateLabel(points[hoverIndex].date)}</p>
                 <div className="mt-1.5 flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-                  <p className="font-semibold text-white">
+                  <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.45)]" />
+                  <p className="font-semibold text-slate-900">
                     {formatMultiple(points[hoverIndex].roas)} ROAS
                   </p>
                 </div>
@@ -437,45 +431,44 @@ export function CampaignBarChart({
   periodLabel: string;
 }) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
-  
   const maxSpend = Math.max(...campaigns.map((campaign) => campaign.spend), 1);
 
   return (
     <div className="mt-6">
       <div className="flex items-end justify-between gap-4">
         <div>
-          <p className="text-3xl font-semibold tracking-tight text-white">{campaigns.length}</p>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="text-3xl font-semibold tracking-tight text-slate-900">{campaigns.length}</p>
+          <p className="mt-1 text-sm text-slate-600">
             Highest-spend campaigns across {periodLabel.toLowerCase()}.
           </p>
         </div>
-        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-300">
+        <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
           {periodLabel}
         </span>
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-white/10 bg-slate-950/40 p-4">
+      <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
         <div className="mb-3 flex items-center justify-between gap-3 text-xs">
           <span className="text-slate-500">Spend scale</span>
-          <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 font-medium text-slate-300 shadow-sm">
+          <span className="rounded-md border border-slate-200 bg-white px-2.5 py-1 font-medium text-slate-700 shadow-sm">
             {formatCompactCurrency(maxSpend)} max
           </span>
         </div>
-        
+
         <div className="flex h-64 items-end gap-3 pt-8">
           {campaigns.map((campaign, index) => {
             const tone = getCampaignTone(campaign.roas);
             const isHovered = hoverIndex === index;
 
             return (
-              <div key={campaign.campaignName} className="flex min-w-0 flex-1 flex-col items-center gap-3 h-full">
+              <div key={campaign.campaignName} className="flex h-full min-w-0 flex-1 flex-col items-center gap-3">
                 <div className="flex h-full w-full items-end">
                   <div
                     onMouseEnter={() => setHoverIndex(index)}
                     onMouseLeave={() => setHoverIndex(null)}
                     className={cn(
-                      'relative w-full rounded-t-md border-t-2 bg-gradient-to-t transition-all duration-300 cursor-pointer',
-                      isHovered ? 'opacity-100 brightness-110' : 'opacity-70 hover:opacity-100', 
+                      'relative w-full cursor-pointer rounded-t-md border-t-2 bg-gradient-to-t transition-all duration-300',
+                      isHovered ? 'opacity-100 brightness-110' : 'opacity-70 hover:opacity-100',
                       tone === 'positive'
                         ? 'border-emerald-400 from-emerald-500/0 to-emerald-500/30 shadow-[0_-8px_16px_-6px_rgba(52,211,153,0.25)]'
                         : tone === 'warning'
@@ -485,19 +478,19 @@ export function CampaignBarChart({
                     style={{ height: `${(campaign.spend / maxSpend) * 100}%` }}
                   >
                     {isHovered && (
-                      <div className="absolute bottom-full left-1/2 mb-3 -translate-x-1/2 z-20 pointer-events-none">
-                        <div className="whitespace-nowrap rounded-xl border border-white/10 bg-slate-900/95 px-3 py-2.5 text-xs shadow-2xl backdrop-blur-md">
-                          <p className="font-semibold text-white mb-2">{campaign.campaignName}</p>
+                      <div className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-3 -translate-x-1/2">
+                        <div className="whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs shadow-xl">
+                          <p className="mb-2 font-semibold text-slate-900">{campaign.campaignName}</p>
                           <div className="flex flex-col gap-1.5">
                             <div className="flex items-center justify-between gap-4">
-                              <span className="text-slate-400 font-medium">Spend</span>
-                              <span className="font-semibold text-white">{formatCurrency(campaign.spend)}</span>
+                              <span className="font-medium text-slate-500">Spend</span>
+                              <span className="font-semibold text-slate-900">{formatCurrency(campaign.spend)}</span>
                             </div>
                             <div className="flex items-center justify-between gap-4">
-                              <span className="text-slate-400 font-medium">ROAS</span>
+                              <span className="font-medium text-slate-500">ROAS</span>
                               <div className="flex items-center gap-1.5">
                                 <span className={cn('h-1.5 w-1.5 rounded-full', toneStyles[tone].dot)} />
-                                <span className="font-semibold text-white">{formatMultiple(campaign.roas)}</span>
+                                <span className="font-semibold text-slate-900">{formatMultiple(campaign.roas)}</span>
                               </div>
                             </div>
                           </div>
@@ -506,10 +499,10 @@ export function CampaignBarChart({
                     )}
                   </div>
                 </div>
-                
+
                 <div className="w-full text-center">
-                  <p 
-                    className="truncate text-[11px] font-medium text-slate-400 hover:text-slate-200 transition-colors cursor-default" 
+                  <p
+                    className="cursor-default truncate text-[11px] font-medium text-slate-500 transition-colors hover:text-slate-800"
                     title={campaign.campaignName}
                   >
                     {truncateLabel(campaign.campaignName, 14)}
@@ -540,22 +533,17 @@ export function DateRangeSelector({
         onChange={(e) => onChange(e.target.value as DateRangeOption)}
         disabled={disabled}
         className={cn(
-          "w-full appearance-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2.5 pr-10 text-sm font-medium text-white outline-none backdrop-blur-md transition-all hover:bg-white/[0.06] focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 shadow-sm cursor-pointer",
-          disabled && "cursor-not-allowed opacity-70"
+          'w-full cursor-pointer appearance-none rounded-2xl border border-slate-200 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-slate-900 outline-none transition-all hover:bg-slate-50 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 shadow-sm',
+          disabled && 'cursor-not-allowed opacity-70',
         )}
       >
         {DATE_RANGE_OPTIONS.map((option) => (
-          <option 
-            key={option.value} 
-            value={option.value} 
-            className="bg-slate-900 text-white"
-          >
+          <option key={option.value} value={option.value} className="bg-white text-slate-900">
             {option.label}
           </option>
         ))}
       </select>
-      
-      {/* Custom Up/Down Chevron Icon for the Dropdown */}
+
       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
@@ -567,7 +555,7 @@ export function DateRangeSelector({
 
 export function LoadingBadge({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-100">
+    <span className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-medium text-cyan-700">
       <Spinner />
       {label}
     </span>
@@ -577,22 +565,19 @@ export function LoadingBadge({ label }: { label: string }) {
 export function DashboardSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="animate-pulse rounded-[28px] border border-white/10 bg-white/[0.04] p-6">
-        <div className="h-3 w-24 rounded-full bg-white/10" />
-        <div className="mt-4 h-10 w-72 rounded-full bg-white/10" />
-        <div className="mt-4 h-4 w-full max-w-2xl rounded-full bg-white/10" />
+      <div className="animate-pulse rounded-[28px] border border-slate-200 bg-white p-6">
+        <div className="h-3 w-24 rounded-full bg-slate-200" />
+        <div className="mt-4 h-10 w-72 rounded-full bg-slate-200" />
+        <div className="mt-4 h-4 w-full max-w-2xl rounded-full bg-slate-200" />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div
-            key={index}
-            className="animate-pulse rounded-[24px] border border-white/10 bg-white/[0.04] p-5"
-          >
-            <div className="h-3 w-16 rounded-full bg-white/10" />
-            <div className="mt-6 h-10 w-28 rounded-full bg-white/10" />
-            <div className="mt-4 h-4 w-full rounded-full bg-white/10" />
-            <div className="mt-2 h-4 w-3/4 rounded-full bg-white/10" />
+          <div key={index} className="animate-pulse rounded-[24px] border border-slate-200 bg-white p-5">
+            <div className="h-3 w-16 rounded-full bg-slate-200" />
+            <div className="mt-6 h-10 w-28 rounded-full bg-slate-200" />
+            <div className="mt-4 h-4 w-full rounded-full bg-slate-200" />
+            <div className="mt-2 h-4 w-3/4 rounded-full bg-slate-200" />
           </div>
         ))}
       </div>
@@ -600,29 +585,23 @@ export function DashboardSkeleton() {
       <div className="grid gap-6 2xl:grid-cols-[minmax(0,1.55fr)_minmax(330px,0.95fr)]">
         <div className="space-y-6">
           {Array.from({ length: 2 }).map((_, index) => (
-            <div
-              key={index}
-              className="animate-pulse rounded-[28px] border border-white/10 bg-white/[0.04] p-6"
-            >
-              <div className="h-3 w-20 rounded-full bg-white/10" />
-              <div className="mt-4 h-8 w-48 rounded-full bg-white/10" />
-              <div className="mt-4 h-56 rounded-[24px] bg-white/10" />
+            <div key={index} className="animate-pulse rounded-[28px] border border-slate-200 bg-white p-6">
+              <div className="h-3 w-20 rounded-full bg-slate-200" />
+              <div className="mt-4 h-8 w-48 rounded-full bg-slate-200" />
+              <div className="mt-4 h-56 rounded-[24px] bg-slate-200" />
             </div>
           ))}
         </div>
 
         <div className="space-y-6">
           {Array.from({ length: 2 }).map((_, index) => (
-            <div
-              key={index}
-              className="animate-pulse rounded-[28px] border border-white/10 bg-white/[0.04] p-6"
-            >
-              <div className="h-3 w-24 rounded-full bg-white/10" />
-              <div className="mt-4 h-8 w-56 rounded-full bg-white/10" />
+            <div key={index} className="animate-pulse rounded-[28px] border border-slate-200 bg-white p-6">
+              <div className="h-3 w-24 rounded-full bg-slate-200" />
+              <div className="mt-4 h-8 w-56 rounded-full bg-slate-200" />
               <div className="mt-5 space-y-3">
-                <div className="h-20 rounded-[24px] bg-white/10" />
-                <div className="h-20 rounded-[24px] bg-white/10" />
-                <div className="h-20 rounded-[24px] bg-white/10" />
+                <div className="h-20 rounded-[24px] bg-slate-200" />
+                <div className="h-20 rounded-[24px] bg-slate-200" />
+                <div className="h-20 rounded-[24px] bg-slate-200" />
               </div>
             </div>
           ))}
@@ -646,12 +625,12 @@ export function DataStateCard({
   return (
     <SurfaceCard className="p-8">
       <div className="flex flex-col items-start gap-4">
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-200">
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-700">
           <InsightIcon />
         </span>
         <div>
-          <h2 className="text-xl font-semibold text-white">{title}</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">{description}</p>
+          <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{description}</p>
         </div>
         {actionLabel && onAction ? (
           <button

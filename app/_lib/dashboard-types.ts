@@ -75,3 +75,24 @@ export type DashboardResponse = {
   insights: DashboardInsight[];
   focusAreas: FocusArea[];
 };
+
+export type DashboardMetricValue = {
+  value: number;
+  previousValue: number;
+  deltaPercent: number | null;
+};
+
+export type DashboardMetricsResponse = {
+  asOfDate: string;
+  selectedRange: DateRangeOption;
+  rangeDays: number;
+  periodLabel: string;
+  comparisonLabel: string;
+  metrics: {
+    totalCost: DashboardMetricValue;
+    totalConversions: DashboardMetricValue;
+    averageCpa: DashboardMetricValue;
+    overallRoas: DashboardMetricValue;
+    totalRevenue: DashboardMetricValue;
+  };
+};

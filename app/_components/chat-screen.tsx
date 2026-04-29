@@ -66,25 +66,25 @@ export default function ChatScreen() {
         <PageLead
           eyebrow="Dedicated chat"
           title="Ask the analyst without dashboard clutter"
-          description="The chat experience now lives on its own route, with a full-height message thread and a sticky composer that continues to use the existing backend chat API. Session state stays in the shared workspace layer, so messages survive route changes."
+          description="The chat experience lives on its own route, with a full-height message thread and a sticky composer. The AI is querying live, real-time campaign performance data through the backend API, and session state still survives route changes."
         />
       </SurfaceCard>
 
       <SurfaceCard className="flex min-h-[640px] flex-1 flex-col p-4 sm:p-6">
         <div className="flex-1 overflow-y-auto pr-1">
           {chatMessages.length === 0 ? (
-            <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(145deg,rgba(14,165,233,0.14),rgba(15,23,42,0.24))] p-6 sm:p-8">
+            <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-[linear-gradient(145deg,rgba(224,242,254,0.95),rgba(255,255,255,0.98))] p-6 sm:p-8">
               <div className="max-w-2xl">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-medium text-slate-200">
+                <span className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-medium text-cyan-700">
                   <InsightIcon />
                   Ask anything about your ads performance
                 </span>
-                <h2 className="mt-5 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                <h2 className="mt-5 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
                   Start with a focused question and keep the dashboard separate.
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-slate-300 sm:text-base">
+                <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
                   This page keeps the chat experience isolated so KPI cards, charts, and widgets do
-                  not compete with the conversation.
+                  not compete with a live conversation about real-time campaign performance.
                 </p>
               </div>
 
@@ -94,7 +94,7 @@ export default function ChatScreen() {
                     key={query}
                     type="button"
                     onClick={() => handleExampleQuery(query)}
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 hover:-translate-y-0.5 hover:border-cyan-400/20 hover:bg-cyan-400/10 hover:text-cyan-100"
+                    className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700"
                   >
                     {query}
                   </button>
@@ -113,9 +113,9 @@ export default function ChatScreen() {
           )}
         </div>
 
-        <div className="sticky bottom-0 mt-6 border-t border-white/10 bg-[#08111f]/85 pt-4 backdrop-blur-xl">
+        <div className="sticky bottom-0 mt-6 border-t border-slate-200 bg-white/90 pt-4 backdrop-blur-xl">
           <form onSubmit={sendMessage}>
-            <div className="rounded-[28px] border border-white/10 bg-[#0b1425]/90 p-4 shadow-[0_30px_80px_-40px_rgba(14,165,233,0.45)]">
+            <div className="rounded-[28px] border border-slate-200 bg-slate-50/90 p-4 shadow-[0_30px_80px_-52px_rgba(14,165,233,0.18)]">
               <div className="flex flex-col gap-3 lg:flex-row">
                 <div className="relative flex-1">
                   <input
@@ -124,10 +124,10 @@ export default function ChatScreen() {
                     value={chatDraft}
                     onChange={(event) => setChatDraft(event.target.value)}
                     placeholder="Ask a question about your campaign performance..."
-                    className="h-14 w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 pr-20 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400/40 focus:bg-slate-950 focus:ring-4 focus:ring-cyan-400/10 disabled:cursor-not-allowed disabled:opacity-70"
+                    className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 pr-20 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-cyan-400 focus:bg-white focus:ring-4 focus:ring-cyan-100 disabled:cursor-not-allowed disabled:opacity-70"
                     disabled={isLoading}
                   />
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-500">
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400">
                     {chatDraft.length}/160
                   </span>
                 </div>
@@ -166,8 +166,8 @@ function MessageCard({ role, content }: { role: 'user' | 'ai'; content: string }
       <article
         className={
           isUser
-            ? 'max-w-3xl rounded-[26px] border border-cyan-400/20 bg-[linear-gradient(135deg,rgba(6,182,212,0.24),rgba(37,99,235,0.32))] p-5 text-white shadow-[0_26px_80px_-52px_rgba(15,23,42,1)]'
-            : 'max-w-3xl rounded-[26px] border border-white/10 bg-white/[0.04] p-5 text-slate-200 shadow-[0_26px_80px_-52px_rgba(15,23,42,1)]'
+            ? 'max-w-3xl rounded-[26px] border border-cyan-200 bg-[linear-gradient(135deg,rgba(224,242,254,0.98),rgba(219,234,254,0.98))] p-5 text-slate-900 shadow-[0_26px_80px_-52px_rgba(15,23,42,0.18)]'
+            : 'max-w-3xl rounded-[26px] border border-slate-200 bg-white p-5 text-slate-700 shadow-[0_26px_80px_-52px_rgba(15,23,42,0.14)]'
         }
       >
         <div className="mb-3 flex items-center justify-between gap-3">
@@ -175,20 +175,20 @@ function MessageCard({ role, content }: { role: 'user' | 'ai'; content: string }
             <span
               className={
                 isUser
-                  ? 'h-2.5 w-2.5 rounded-full bg-cyan-300'
-                  : 'h-2.5 w-2.5 rounded-full bg-emerald-300'
+                  ? 'h-2.5 w-2.5 rounded-full bg-cyan-500'
+                  : 'h-2.5 w-2.5 rounded-full bg-emerald-500'
               }
             />
-            <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-300">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-500">
               {isUser ? 'Your Query' : 'AI Insight'}
             </span>
           </div>
         </div>
 
         {isUser ? (
-          <p className="text-sm leading-7 text-white">{content}</p>
+          <p className="text-sm leading-7 text-slate-900">{content}</p>
         ) : (
-          <div className="text-sm leading-7 text-slate-300 [&_a]:text-cyan-300 [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded-md [&_code]:bg-white/10 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_ol]:ml-5 [&_ol]:list-decimal [&_pre]:mt-4 [&_pre]:overflow-x-auto [&_pre]:rounded-2xl [&_pre]:border [&_pre]:border-white/10 [&_pre]:bg-slate-950/80 [&_pre]:p-4 [&_strong]:font-semibold [&_strong]:text-white [&_ul]:ml-5 [&_ul]:list-disc">
+          <div className="text-sm leading-7 text-slate-700 [&_a]:text-cyan-700 [&_a]:underline [&_a]:underline-offset-4 [&_code]:rounded-md [&_code]:bg-slate-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_ol]:ml-5 [&_ol]:list-decimal [&_pre]:mt-4 [&_pre]:overflow-x-auto [&_pre]:rounded-2xl [&_pre]:border [&_pre]:border-slate-200 [&_pre]:bg-slate-50 [&_pre]:p-4 [&_strong]:font-semibold [&_strong]:text-slate-900 [&_ul]:ml-5 [&_ul]:list-disc">
             <ReactMarkdown>{content}</ReactMarkdown>
           </div>
         )}
@@ -200,12 +200,12 @@ function MessageCard({ role, content }: { role: 'user' | 'ai'; content: string }
 function LoadingMessageCard() {
   return (
     <div className="flex justify-start">
-      <div className="max-w-3xl rounded-[26px] border border-cyan-400/15 bg-[linear-gradient(135deg,rgba(8,145,178,0.12),rgba(15,23,42,0.36))] p-5 shadow-[0_26px_80px_-52px_rgba(15,23,42,1)]">
-        <div className="flex items-center gap-3 text-sm font-medium text-cyan-200">
+      <div className="max-w-3xl rounded-[26px] border border-cyan-200 bg-[linear-gradient(135deg,rgba(236,254,255,0.98),rgba(240,249,255,0.98))] p-5 shadow-[0_26px_80px_-52px_rgba(15,23,42,0.14)]">
+        <div className="flex items-center gap-3 text-sm font-medium text-cyan-700">
           <Spinner />
           Analyzing campaign data...
         </div>
-        <div className="mt-4 space-y-2 text-sm text-slate-400">
+        <div className="mt-4 space-y-2 text-sm text-slate-600">
           <p>Detecting anomalies...</p>
           <p>Generating insights...</p>
         </div>
